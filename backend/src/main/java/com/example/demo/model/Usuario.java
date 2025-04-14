@@ -23,13 +23,15 @@ public class Usuario implements UserDetails {
 	private Integer id;
 	
 	@NonNull
+	@Column(nullable = false)
 	private String nome;
 	
 	@NonNull
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	private String email;
 	
 	@NonNull
+	@Column(nullable = false)
 	@JsonIgnore
 	private String password;
 
