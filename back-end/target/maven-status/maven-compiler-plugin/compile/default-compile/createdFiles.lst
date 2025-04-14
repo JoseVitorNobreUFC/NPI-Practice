@@ -1,0 +1,17 @@
+com/example/demo/SpringProjectApplication.class
+com/example/demo/service/impl/UsuarioServiceImpl.class
+com/example/demo/config/JwtTokenFilter.class
+com/example/demo/controller/AuthRequest.class
+com/example/demo/service/UsuarioService.class
+com/example/demo/exception/InvalidJwtAuthenticationException.class
+com/example/demo/config/JwtTokenProvider.class
+com/example/demo/config/UserDetailsCustom.class
+com/example/demo/exception/StandardError.class
+com/example/demo/controller/UsuarioController.class
+com/example/demo/config/WebSecurityConfig.class
+com/example/demo/repository/UsuarioRepository.class
+com/example/demo/model/Usuario.class
+com/example/demo/config/JwtConfigurer.class
+com/example/demo/config/WebMvcConfigurer.class
+com/example/demo/config/CorsFilter.class
+com/example/demo/controller/AuthController.class
