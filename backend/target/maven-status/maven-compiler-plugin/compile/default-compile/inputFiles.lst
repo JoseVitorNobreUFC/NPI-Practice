@@ -6,6 +6,7 @@
 /workspaces/NPI-Practice/backend/src/main/java/com/example/demo/controller/AuthController.java
 /workspaces/NPI-Practice/backend/src/main/java/com/example/demo/config/WebSecurityConfig.java
 /workspaces/NPI-Practice/backend/src/main/java/com/example/demo/exception/StandardError.java
+/workspaces/NPI-Practice/backend/src/main/java/com/example/demo/config/OpenApiConfig.java
 /workspaces/NPI-Practice/backend/src/main/java/com/example/demo/SpringProjectApplication.java
 /workspaces/NPI-Practice/backend/src/main/java/com/example/demo/config/WebMvcConfigurer.java
 /workspaces/NPI-Practice/backend/src/main/java/com/example/demo/model/Usuario.java

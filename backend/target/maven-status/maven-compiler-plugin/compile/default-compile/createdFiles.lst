@@ -9,6 +9,7 @@ com/example/demo/config/UserDetailsCustom.class
 com/example/demo/exception/StandardError.class
 com/example/demo/controller/UsuarioController.class
 com/example/demo/config/WebSecurityConfig.class
+com/example/demo/config/OpenApiConfig.class
 com/example/demo/repository/UsuarioRepository.class
 com/example/demo/model/Usuario.class
 com/example/demo/config/JwtConfigurer.class

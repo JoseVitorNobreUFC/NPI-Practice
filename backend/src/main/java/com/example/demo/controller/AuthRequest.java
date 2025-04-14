@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import java.io.Serializable;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class AuthRequest implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -18,7 +18,7 @@ public class AuthRequest implements Serializable {
         this.password = password;
     }
 
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     public String getUsername() {
         return email;
     }
@@ -39,5 +39,3 @@ public class AuthRequest implements Serializable {
         this.password = password;
     }
 }
-
-
