@@ -26,12 +26,27 @@ public class UsuarioController {
     @GetMapping("{id}")
     public ResponseEntity<Optional<Usuario>> find(@PathVariable Integer id) {
         // Busca usuário pelo id e retornar usuário...
-        return ResponseEntity.ok(usuarioService.findById(id));
+        try {
+            return ResponseEntity.ok(usuarioService.findById(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("")
     public ResponseEntity<String> create(@RequestBody Usuario usuario) {
         // Cadastrar usuário e retornar usuário cadastrado...
+        try {
+            if (usuarioService.findByEmail(usuario.getEmail()) != null) {
+                return ResponseEntity.badRequest().body("Email ja cadastrado");
+            } else if (
+                usuario.getEmail() == null || usuario.getNome() == null || usuario.getPassword() == null
+            ) {
+                return ResponseEntity.badRequest().body("Campos obrigatorios nao preenchidos");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erro ao cadastrar");
+        }
         int lines = usuarioService.insert(usuario.getNome(), usuario.getEmail(), usuario.getPassword(), usuario.isHabilitado());
         return ResponseEntity.ok(lines + " linhas afetadas");
     }
@@ -39,6 +54,13 @@ public class UsuarioController {
     @DeleteMapping("{id}")
     public ResponseEntity<String> delete(@PathVariable Integer id) {
         // Deletar usuário pelo id...
+        try {
+            if (usuarioService.findById(id) == null) {
+                return ResponseEntity.badRequest().body("Id nao cadastrado");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erro ao deletar");
+        }
         int lines = usuarioService.delete(id);
         return ResponseEntity.ok(lines + " linhas afetadas");
     }
@@ -46,11 +68,16 @@ public class UsuarioController {
     @PutMapping("{id}")
     public ResponseEntity<String> update(@RequestBody Usuario usuario, @PathVariable Integer id) {
         // Atualizar usuário pelo id...
+        try {
+            if (usuarioService.findById(id) == null) {
+                return ResponseEntity.badRequest().body("Id nao cadastrado");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erro ao atualizar");
+        }   
         int lines = usuarioService.update(id, usuario.getNome(), usuario.getEmail(), usuario.getPassword(), usuario.isHabilitado());
         return ResponseEntity.ok(lines + " linhas afetadas");
-    }
-
-
+    }w
 
 }
 
