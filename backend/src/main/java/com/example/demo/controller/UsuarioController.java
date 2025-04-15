@@ -1,11 +1,10 @@
 package com.example.demo.controller;
 
 import java.util.List;
-
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.model.Usuario;
@@ -25,24 +24,31 @@ public class UsuarioController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<List<Usuario>> find(@PathVariable Integer id) {
+    public ResponseEntity<Optional<Usuario>> find(@PathVariable Integer id) {
         // Busca usuário pelo id e retornar usuário...
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(usuarioService.findById(id));
     }
 
     @PostMapping("")
-    public ResponseEntity<List<Usuario>> create(@RequestBody Usuario usuario) {
+    public ResponseEntity<String> create(@RequestBody Usuario usuario) {
         // Cadastrar usuário e retornar usuário cadastrado...
-        return ResponseEntity.ok().build();
+        int lines = usuarioService.insert(usuario.getNome(), usuario.getEmail(), usuario.getPassword(), usuario.isHabilitado());
+        return ResponseEntity.ok(lines + " linhas afetadas");
     }
 
-    //@DeleteMapping("{id}")
-    //TODO: excluir usuário
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> delete(@PathVariable Integer id) {
+        // Deletar usuário pelo id...
+        int lines = usuarioService.delete(id);
+        return ResponseEntity.ok(lines + " linhas afetadas");
+    }
 
-    // @PutMapping("{id}")
-    /*public ResponseEntity<Usuario> update(@RequestBody Usuario usuario) {
-
-    }*/
+    @PutMapping("{id}")
+    public ResponseEntity<String> update(@RequestBody Usuario usuario, @PathVariable Integer id) {
+        // Atualizar usuário pelo id...
+        int lines = usuarioService.update(id, usuario.getNome(), usuario.getEmail(), usuario.getPassword(), usuario.isHabilitado());
+        return ResponseEntity.ok(lines + " linhas afetadas");
+    }
 
 
 

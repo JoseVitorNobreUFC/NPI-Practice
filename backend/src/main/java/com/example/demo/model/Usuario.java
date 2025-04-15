@@ -1,7 +1,5 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +8,9 @@ import java.util.List;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
@@ -32,9 +33,10 @@ public class Usuario implements UserDetails {
 	
 	@NonNull
 	@Column(nullable = false)
-	@JsonIgnore
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 
+	@Column(name = "habilitado")
 	private boolean habilitado;
 
 	public Usuario() {}
@@ -43,6 +45,13 @@ public class Usuario implements UserDetails {
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
+	}
+
+	public Usuario (String nome, String email, boolean habilitado, String password) {
+		this.nome = nome;
+		this.email = email;
+		this.habilitado = habilitado;
+		this.password = password;
 	}
 
 	public Integer getId() {
@@ -82,6 +91,7 @@ public class Usuario implements UserDetails {
 	}
 
 	@Override
+	@JsonIgnore
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return Collections.emptyList();
 		//return this.papeis;
@@ -98,25 +108,30 @@ public class Usuario implements UserDetails {
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isAccountNonExpired() {
 		return true;
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isAccountNonLocked() {
 		return true;
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isEnabled() {
 		return this.habilitado;
 	}
 
+	@JsonIgnore
 	public List<String> getRoles() {
 			return new ArrayList<String>();
 	}

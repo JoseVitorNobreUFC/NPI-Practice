@@ -2,10 +2,12 @@ package com.example.demo.service.impl;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Usuario;
@@ -18,14 +20,39 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+   
     @Override
     public Usuario findByEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
 
     @Override
+    public Optional<Usuario> findById(Integer id) {
+        return usuarioRepository.findById(id);
+    }
+
+    @Override
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
+    }
+
+    @Override
+    public int delete(Integer id) {
+        return usuarioRepository.deleteUserById(id);
+    }
+
+    @Override
+    public int update(Integer id, String nome, String email, String password, boolean habilitado) {
+        return usuarioRepository.updateUserById(id, nome, email, password, habilitado);
+    }
+
+    @Override
+    public int insert(String nome, String email, String password, boolean habilitado) {
+        String encryptedPassword = passwordEncoder.encode(password);
+        return usuarioRepository.insertUser(nome, email, encryptedPassword, habilitado);
     }
 
     @PostConstruct
