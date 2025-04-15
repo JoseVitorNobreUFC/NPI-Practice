@@ -32,12 +32,21 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Usuario u SET u.nome = :nome, u.email = :email, u.password = :password, u.habilitado = :habilitado WHERE u.id = :id")
-    int updateUserById(Integer id, String nome, String email, String password, boolean habilitado);
+    @Query("UPDATE Usuario u SET u.nome = :nome, u.email = :email, u.password = :password, u.habilitado = :habilitado, u.curso.id = :cursoId WHERE u.id = :id")
+    int updateUserById(@Param("id") Integer id,
+                    @Param("nome") String nome,
+                    @Param("email") String email,
+                    @Param("password") String password,
+                    @Param("habilitado") boolean habilitado,
+                    @Param("cursoId") Integer cursoId);
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO Usuario (nome, email, password, habilitado) VALUES (:nome, :email, :password, :habilitado)", nativeQuery = true)
-    int insertUser(String nome, String email, String password, boolean habilitado   );
+    @Query(value = "INSERT INTO usuario (nome, email, password, habilitado, curso_id) VALUES (:nome, :email, :password, :habilitado, :cursoId)", nativeQuery = true)
+    int insertUser(@Param("nome") String nome,
+                @Param("email") String email,
+                @Param("password") String password,
+                @Param("habilitado") boolean habilitado,
+                @Param("cursoId") Integer cursoId);
 
 }

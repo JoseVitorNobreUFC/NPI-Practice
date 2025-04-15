@@ -15,8 +15,8 @@ public interface UsuarioService {
 
   int delete(Integer id);
 
-  int update(Integer id, String nome, String email, String password, boolean habilitado);
+  int update(Integer id, String nome, String email, String password, Boolean habilitado, Integer cursoId);
 
-  int insert(String nome, String email, String password, boolean habilitado);
+  int insert(String nome, String email, String password, boolean habilitado, Integer cursoId);
 }
 

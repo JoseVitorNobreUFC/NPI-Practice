@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.model.Curso;
 import com.example.demo.model.Usuario;
+import com.example.demo.repository.CursoRepository;
 import com.example.demo.repository.UsuarioRepository;
 import com.example.demo.service.UsuarioService;
 
@@ -20,6 +22,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private CursoRepository cursoRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -45,15 +49,34 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public int update(Integer id, String nome, String email, String password, boolean habilitado) {
-        return usuarioRepository.updateUserById(id, nome, email, password, habilitado);
+    public int update(Integer id, String nome, String email, String password, Boolean habilitado, Integer cursoId) {
+        Optional<Usuario> optUsuario = usuarioRepository.findById(id);
+        if (optUsuario.isEmpty()) return 0;
+
+        Usuario usuario = optUsuario.get();
+
+        if (nome != null) usuario.setNome(nome);
+        if (email != null) usuario.setEmail(email);
+        if (password != null && !password.isEmpty()) {
+            usuario.setPassword(passwordEncoder.encode(password));
+        }
+        if (habilitado != null) usuario.setHabilitado(habilitado);
+        if (cursoId != null) {
+            Curso curso = cursoRepository.findById(cursoId)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado com id: " + cursoId));
+            usuario.setCurso(curso);
+        }
+
+        usuarioRepository.save(usuario);
+        return 1;
     }
 
     @Override
-    public int insert(String nome, String email, String password, boolean habilitado) {
+    public int insert(String nome, String email, String password, boolean habilitado, Integer cursoId) {
         String encryptedPassword = passwordEncoder.encode(password);
-        return usuarioRepository.insertUser(nome, email, encryptedPassword, habilitado);
+        return usuarioRepository.insertUser(nome, email, encryptedPassword, habilitado, cursoId);
     }
+
 
     @PostConstruct
     public void init() {
