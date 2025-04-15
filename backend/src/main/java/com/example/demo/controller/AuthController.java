@@ -45,7 +45,11 @@ public class AuthController {
             return ok(model);
 
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(404).body("Usuário e/ou senha inválidos");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Usuário e/ou senha inválidos");
+
+            return ResponseEntity.status(404).body(errorResponse);
+
         }
     }
 

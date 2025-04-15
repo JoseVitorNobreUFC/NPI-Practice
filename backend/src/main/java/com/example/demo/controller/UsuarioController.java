@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,60 +25,78 @@ public class UsuarioController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Optional<Usuario>> find(@PathVariable Integer id) {
-        // Busca usuário pelo id e retornar usuário...
+    public ResponseEntity<Object> find(@PathVariable Integer id) {
         try {
-            return ResponseEntity.ok(usuarioService.findById(id));
+            Optional<Usuario> usuario = usuarioService.findById(id);
+            if (usuario.isPresent()) {
+                return ResponseEntity.ok(usuario);
+            } else {
+                return ResponseEntity.status(404).body(Map.of("error", "Usuário não encontrado"));
+            }
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(500).body(Map.of("error", "Erro ao buscar usuário"));
         }
     }
 
     @PostMapping("")
-    public ResponseEntity<String> create(@RequestBody Usuario usuario) {
-        // Cadastrar usuário e retornar usuário cadastrado...
+    public ResponseEntity<Object> create(@RequestBody Usuario usuario) {
         try {
-            if (usuarioService.findByEmail(usuario.getEmail()) != null) {
-                return ResponseEntity.badRequest().body("Email ja cadastrado");
-            } else if (
-                usuario.getEmail() == null || usuario.getNome() == null || usuario.getPassword() == null
-            ) {
-                return ResponseEntity.badRequest().body("Campos obrigatorios nao preenchidos");
+            if (usuario.getEmail() == null || usuario.getNome() == null || usuario.getPassword() == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Campos obrigatórios não preenchidos"));
             }
+
+            if (usuarioService.findByEmail(usuario.getEmail()) != null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Email já cadastrado"));
+            }
+
+            int lines = usuarioService.insert(
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getPassword(),
+                usuario.isHabilitado()
+            );
+            return ResponseEntity.ok(Map.of("message", lines + " linhas afetadas"));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao cadastrar");
+            return ResponseEntity.status(500).body(Map.of("error", "Erro ao cadastrar usuário"));
         }
-        int lines = usuarioService.insert(usuario.getNome(), usuario.getEmail(), usuario.getPassword(), usuario.isHabilitado());
-        return ResponseEntity.ok(lines + " linhas afetadas");
     }
 
+
     @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
-        // Deletar usuário pelo id...
+    public ResponseEntity<Object> delete(@PathVariable Integer id) {
         try {
-            if (usuarioService.findById(id) == null) {
-                return ResponseEntity.badRequest().body("Id nao cadastrado");
+            Optional<Usuario> usuario = usuarioService.findById(id);
+            if (usuario.isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of("error", "Usuário com ID informado não encontrado"));
             }
+
+            int lines = usuarioService.delete(id);
+            return ResponseEntity.ok(Map.of("message", lines + " linhas afetadas"));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao deletar");
+            return ResponseEntity.status(500).body(Map.of("error", "Erro ao deletar usuário"));
         }
-        int lines = usuarioService.delete(id);
-        return ResponseEntity.ok(lines + " linhas afetadas");
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<String> update(@RequestBody Usuario usuario, @PathVariable Integer id) {
-        // Atualizar usuário pelo id...
+    public ResponseEntity<Object> update(@RequestBody Usuario usuario, @PathVariable Integer id) {
         try {
-            if (usuarioService.findById(id) == null) {
-                return ResponseEntity.badRequest().body("Id nao cadastrado");
+            Optional<Usuario> existente = usuarioService.findById(id);
+            if (existente.isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of("error", "Usuário com ID informado não encontrado"));
             }
+
+            int lines = usuarioService.update(
+                id,
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getPassword(),
+                usuario.isHabilitado()
+            );
+            return ResponseEntity.ok(Map.of("message", lines + " linhas afetadas"));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao atualizar");
-        }   
-        int lines = usuarioService.update(id, usuario.getNome(), usuario.getEmail(), usuario.getPassword(), usuario.isHabilitado());
-        return ResponseEntity.ok(lines + " linhas afetadas");
-    }w
+            return ResponseEntity.status(500).body(Map.of("error", "Erro ao atualizar usuário"));
+        }
+    }
 
 }
 
