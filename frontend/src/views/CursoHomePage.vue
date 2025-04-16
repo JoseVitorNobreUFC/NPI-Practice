@@ -46,6 +46,7 @@ const snackbarMessage = ref('')
 const snackbarColor = ref('error')
 
 import CursoFormDialog from '@/components/CursoFormDialog.vue'
+import LogoutButton from '@/components/LogoutButtom.vue'
 
 const cursos = ref<any[]>([])
 const dialog = ref(false)

@@ -16,6 +16,13 @@
     </div>
 
     <v-data-table :headers="headers" :items="usuarios" class="mt-4" item-value="id">
+      <template #item.habilitado="{ item }">
+        <div class="d-flex align-center justify-center">
+          <v-icon :color="item.habilitado ? 'success' : 'error'">
+            {{ item.habilitado ? 'mdi-check-circle' : 'mdi-close-circle' }}
+          </v-icon>
+        </div>
+      </template>
       <template #item.curso="{ item }">
         {{ item.curso ? `${item.curso.nome} (${item.curso.sigla})` : 'Não informado' }}
       </template>

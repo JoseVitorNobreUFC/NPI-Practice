@@ -75,6 +75,7 @@ public class UsuarioController {
             if (usuario.get().isHabilitado()) {
                 return ResponseEntity.status(400).body(Map.of("error", "Usuário habilitado, impossível deletar"));
             }
+            
 
             int lines = usuarioService.delete(id);
             return ResponseEntity.ok(Map.of("message", lines + " linhas afetadas"));
@@ -91,7 +92,7 @@ public class UsuarioController {
                 return ResponseEntity.status(404).body(Map.of("error", "Usuário com ID informado não encontrado"));
             }
 
-            if (usuarioService.findByEmail(usuarioDto.getEmail()) != null) {
+            if (usuarioService.findByEmail(usuarioDto.getEmail()) != null && !existente.get().getEmail().equals(usuarioDto.getEmail())) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Email já cadastrado"));
             }
 

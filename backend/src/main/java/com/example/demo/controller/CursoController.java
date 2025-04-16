@@ -71,7 +71,7 @@ public class CursoController {
                 return ResponseEntity.status(404).body(Map.of("error", "Curso nao encontrado"));
             }
 
-            if (cursoService.findByNome(cursoDto.getNome()) != null) {
+            if (cursoService.findByNome(cursoDto.getNome()) != null && !curso.get().getNome().equals(cursoDto.getNome())) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Curso ja cadastrado"));
             }
 
