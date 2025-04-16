@@ -135,6 +135,11 @@ const salvar = async () => {
 
     dialog.value = false
     emit('atualizarLista')
+    form.value = {
+        nome: '',
+        sigla: '',
+        turno: Turno.MANHA,
+    }
   } catch (error) {
     console.error('Erro ao salvar curso:', error)
     snackbarMessage.value = 'Erro de conexão com o servidor'

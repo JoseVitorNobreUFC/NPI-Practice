@@ -92,8 +92,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         if (usuarioRepository.findAll().isEmpty()) {
             Usuario usuarioTeste = new Usuario();
-            usuarioTeste.setNome("HomemSegredo");
-            usuarioTeste.setEmail("homem@segredo.com");
+            usuarioTeste.setNome("Teste");
+            usuarioTeste.setEmail("teste@teste.com");
             usuarioTeste.setPassword("$2a$12$NMgLwu8bqUNT5sZjQPYfXehBWCKRJp4soaRtcZ6cFmnYNZD/o1fiu");
             usuarioTeste.setHabilitado(true);
             usuarioTeste.setCurso(cursoRepository.findById(1).orElseThrow(() -> new RuntimeException("Curso nao encontrado")));
