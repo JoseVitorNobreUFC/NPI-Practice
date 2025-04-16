@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Curso;
+import com.example.demo.model.Turno;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.CursoRepository;
 import com.example.demo.repository.UsuarioRepository;
@@ -80,13 +81,22 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @PostConstruct
     public void init() {
+        if (cursoRepository.findAll().isEmpty()) {
+            Curso cursoTeste = new Curso();
+            cursoTeste.setNome("Engenharia de Software");
+            cursoTeste.setSigla("ES");
+            cursoTeste.setTurno(Turno.MANHA);
+            cursoRepository.save(cursoTeste);
+            System.out.println("Curso de teste criado com sucesso!");
+        }
+
         if (usuarioRepository.findAll().isEmpty()) {
             Usuario usuarioTeste = new Usuario();
             usuarioTeste.setNome("HomemSegredo");
             usuarioTeste.setEmail("homem@segredo.com");
             usuarioTeste.setPassword("$2a$12$NMgLwu8bqUNT5sZjQPYfXehBWCKRJp4soaRtcZ6cFmnYNZD/o1fiu");
             usuarioTeste.setHabilitado(true);
-            
+            usuarioTeste.setCurso(cursoRepository.findById(1).orElseThrow(() -> new RuntimeException("Curso nao encontrado")));
             // Salva o usuário de teste no banco de dados
             usuarioRepository.save(usuarioTeste);
             System.out.println("Usuário de teste criado com sucesso!");

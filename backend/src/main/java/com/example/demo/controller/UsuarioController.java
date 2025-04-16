@@ -42,20 +42,20 @@ public class UsuarioController {
     @PostMapping("")
     public ResponseEntity<Object> create(@RequestBody UsuarioDto usuarioDto) {
         try {
-            if (usuarioDto.email == null || usuarioDto.nome == null || usuarioDto.password == null) {
+            if (usuarioDto.getEmail() == null || usuarioDto.getNome() == null || usuarioDto.getPassword() == null) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Campos obrigatórios não preenchidos"));
             }
 
-            if (usuarioService.findByEmail(usuarioDto.email) != null) {
+            if (usuarioService.findByEmail(usuarioDto.getEmail()) != null) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Email já cadastrado"));
             }
 
             int lines = usuarioService.insert(
-                usuarioDto.nome,
-                usuarioDto.email,
-                usuarioDto.password,
-                usuarioDto.habilitado,
-                usuarioDto.cursoId
+                usuarioDto.getNome(),
+                usuarioDto.getEmail(),
+                usuarioDto.getPassword(),
+                usuarioDto.isHabilitado(),
+                usuarioDto.getCursoId()
             );
             return ResponseEntity.ok(Map.of("message", lines + " linhas afetadas"));
         } catch (Exception e) {
@@ -70,6 +70,10 @@ public class UsuarioController {
             Optional<Usuario> usuario = usuarioService.findById(id);
             if (usuario.isEmpty()) {
                 return ResponseEntity.status(404).body(Map.of("error", "Usuário com ID informado não encontrado"));
+            }
+
+            if (usuario.get().isHabilitado()) {
+                return ResponseEntity.status(400).body(Map.of("error", "Usuário habilitado, impossível deletar"));
             }
 
             int lines = usuarioService.delete(id);
@@ -87,13 +91,17 @@ public class UsuarioController {
                 return ResponseEntity.status(404).body(Map.of("error", "Usuário com ID informado não encontrado"));
             }
 
+            if (usuarioService.findByEmail(usuarioDto.getEmail()) != null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Email já cadastrado"));
+            }
+
             int lines = usuarioService.update(
                 id,
-                usuarioDto.nome,
-                usuarioDto.email,
-                usuarioDto.password,
-                usuarioDto.habilitado,
-                usuarioDto.cursoId
+                usuarioDto.getNome(),
+                usuarioDto.getEmail(),
+                usuarioDto.getPassword(),
+                usuarioDto.isHabilitado(),
+                usuarioDto.getCursoId()
             );
             return ResponseEntity.ok(Map.of("message", lines + " linhas afetadas"));
         } catch (Exception e) {

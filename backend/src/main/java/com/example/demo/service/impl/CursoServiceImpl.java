@@ -22,6 +22,11 @@ public class CursoServiceImpl implements CursoService {
     }
 
     @Override
+    public Curso findByNome(String nome) {
+        return cursoRepository.findByNome(nome);
+    }
+
+    @Override
     public List<Curso> findAll() {
         return cursoRepository.findAll();
     }
@@ -33,7 +38,21 @@ public class CursoServiceImpl implements CursoService {
 
     @Override
     public int update(Integer id, String nome, String sigla, Turno turno) {
-        return cursoRepository.updateCursoById(id, nome, sigla, turno);
+        Optional<Curso> optCurso = cursoRepository.findById(id);
+        if (optCurso.isEmpty())
+            return 0;
+
+        Curso curso = optCurso.get();
+
+        if (nome != null)
+            curso.setNome(nome);
+        if (sigla != null)
+            curso.setSigla(sigla);
+        if (turno != null)
+            curso.setTurno(turno);
+
+        cursoRepository.save(curso);
+        return 1;
     }
 
     @Override

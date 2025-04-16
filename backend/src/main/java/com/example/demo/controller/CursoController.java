@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.CursoDto;
 import com.example.demo.model.Curso;
 import com.example.demo.service.CursoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,10 @@ public class CursoController {
         try {
             if (curso.getNome() == null || curso.getSigla() == null || curso.getTurno() == null) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Campos obrigatórios não preenchidos"));
+            }
+
+            if (cursoService.findByNome(curso.getNome()) != null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Curso ja cadastrado"));
             }
 
             int lines = cursoService.insert(curso.getNome(), curso.getSigla(), curso.getTurno());
@@ -58,14 +63,20 @@ public class CursoController {
     }
 
     // Atualizar curso
-    @PutMapping("{id}")
-    public ResponseEntity<Object> update(@RequestBody Curso curso, @PathVariable Integer id) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> update(@PathVariable Integer id, @RequestBody CursoDto cursoDto) {
         try {
-            int lines = cursoService.update(id, curso.getNome(), curso.getSigla(), curso.getTurno());
-            if (lines == 0) {
-                return ResponseEntity.status(404).body(Map.of("error", "Curso não encontrado"));
+            Optional<Curso> curso = cursoService.findById(id);
+            if (curso.isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of("error", "Curso nao encontrado"));
             }
-            return ResponseEntity.ok(Map.of("message", lines + " linha(s) afetada(s)"));
+
+            if (cursoService.findByNome(cursoDto.getNome()) != null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Curso ja cadastrado"));
+            }
+
+            int linhasAfetadas = cursoService.update(id, cursoDto.getNome(), cursoDto.getSigla(), cursoDto.getTurno());
+            return ResponseEntity.ok(Map.of("message", linhasAfetadas + " linha(s) atualizada(s"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", "Erro ao atualizar curso"));
         }
@@ -75,13 +86,15 @@ public class CursoController {
     @DeleteMapping("{id}")
     public ResponseEntity<Object> delete(@PathVariable Integer id) {
         try {
-            int lines = cursoService.delete(id);
-            if (lines == 0) {
-                return ResponseEntity.status(404).body(Map.of("error", "Curso não encontrado"));
+            Optional<Curso> curso = cursoService.findById(id);
+            if (curso.isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of("error", "Curso nao encontrado"));
             }
+
+            int lines = cursoService.delete(id);
             return ResponseEntity.ok(Map.of("message", lines + " linha(s) afetada(s)"));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("error", "Erro ao deletar curso"));
+            return ResponseEntity.status(500).body(Map.of("error", "Não pode deletar curso com alunos matriculados"));
         }
     }
 }

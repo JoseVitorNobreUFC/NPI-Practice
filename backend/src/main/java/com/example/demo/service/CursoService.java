@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface CursoService {
 
+    Curso findByNome(String nome);
+    
     Optional<Curso> findById(Integer id);
 
     List<Curso> findAll();

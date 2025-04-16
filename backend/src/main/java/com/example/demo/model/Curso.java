@@ -11,7 +11,7 @@ public class Curso {
 	private Integer id;
 	
 	@NonNull
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String nome;
 
   @NonNull

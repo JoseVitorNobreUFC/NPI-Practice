@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface CursoRepository extends JpaRepository<Curso, Integer> {
 
+    Curso findByNome(String nome);
+    
     // Buscar curso por ID
     @Query("SELECT c FROM Curso c WHERE c.id = :id")
     Optional<Curso> findById(@Param("id") Integer id);
